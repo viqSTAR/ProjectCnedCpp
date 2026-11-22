@@ -11,6 +11,7 @@
 
 class UItemDefinition;
 class UItemInstance;
+class UInputAction;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTCNEDCPP_API UActorInventory : public UActorComponent
@@ -29,11 +30,23 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TArray<TObjectPtr<UItemInstance>> ItemInventory;
 
 	void Add(TSubclassOf<UItemDefinition> ItemDef);
 
-	
+	class UEnhancedInputComponent* Enhanced;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InventoryInput;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	TSubclassOf<UUserWidget> InventoryWidget;
+
+	void ShowInventory();
+
+protected:
+	
+	TObjectPtr<UUserWidget> InventoryUI;
 		
 };

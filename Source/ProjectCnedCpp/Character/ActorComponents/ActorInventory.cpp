@@ -2,6 +2,10 @@
 
 
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
+#include "EnhancedInputComponent.h"
+#include "InputAction.h"
+#include "Blueprint/UserWidget.h"
+#include "ProjectCnedCpp/UI/InventoryUi.h"
 
 // Sets default values for this component's properties
 UActorInventory::UActorInventory()
@@ -19,7 +23,21 @@ void UActorInventory::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (InventoryWidget)
+	{
+		InventoryUI = CreateWidget<UUserWidget>(GetWorld(), InventoryWidget);
+	}
+
 	// ...
+	if (GetOwner())
+	{
+		Enhanced = Cast<UEnhancedInputComponent>(GetOwner()->InputComponent);
+	}
+	if (Enhanced)
+	{
+		Enhanced->BindAction(InventoryInput, ETriggerEvent::Started, this, &UActorInventory::ShowInventory);
+	}
+	
 	
 }
 
@@ -44,6 +62,21 @@ void UActorInventory::Add(TSubclassOf<UItemDefinition> ItemDef)
 
 		UE_LOG(LogTemp, Warning, TEXT("ItemAdded"));
 		
+	}
+}
+
+void UActorInventory::ShowInventory()
+{
+	if (InventoryUI)
+	{
+		InventoryUI->AddToViewport();
+		UInventoryUi* InventoryRef = Cast<UInventoryUi>(InventoryUI);
+		if (InventoryRef)
+		{
+			InventoryRef->InventoryComponent = this;
+			InventoryRef->AddItemToInventory();
+
+		}
 	}
 }
 
