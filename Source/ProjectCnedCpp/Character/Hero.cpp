@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInteraction.h"
 
 
@@ -24,6 +25,7 @@ AHero::AHero()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	FollowCamera->SetupAttachment(CameraBoom);
 	InteractionComponent = CreateDefaultSubobject<UActorInteraction>(TEXT("Interaction"));
+	InventoryComponent = CreateDefaultSubobject<UActorInventory>(TEXT("Inventory"));
 	InteractComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractWidget"));
 	//InteractComponent->SetupAttachment(GetRootComponent());
 	InteractComponent->SetWidgetSpace(EWidgetSpace::Screen);

@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/SceneComponent.h"
 #include "ProjectCnedCpp/ItemFragments/IF_InteractionType.h"
+#include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
 
 
 // Sets default values
@@ -46,6 +47,12 @@ void AItem::Tick(float DeltaTime)
 void AItem::OnPickup_Implementation(AActor* Actor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s picked %s"), *Actor->GetName(), *GetName());
+	UActorInventory* Inventory = Actor->FindComponentByClass<UActorInventory>();
+	if (Inventory)
+	{
+		Inventory->Add(ItemInfo.ItemDefinition);
+	}
+	
 }
 
 EInteractionType AItem::GetInteractionType_Implementation()

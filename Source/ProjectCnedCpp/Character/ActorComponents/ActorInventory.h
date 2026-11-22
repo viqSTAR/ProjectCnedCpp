@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "ProjectCnedCpp/Item/ItemInstance.h"
+#include "ProjectCnedCpp/Item/ItemDefinition.h"
 #include "ActorInventory.generated.h"
 
 
 class UItemDefinition;
+class UItemInstance;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTCNEDCPP_API UActorInventory : public UActorComponent
@@ -26,7 +29,9 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	TArray<TObjectPtr<UItemDefinition>> ItemArray;
+	TArray<TObjectPtr<UItemInstance>> ItemInventory;
+
+	void Add(TSubclassOf<UItemDefinition> ItemDef);
 
 	
 

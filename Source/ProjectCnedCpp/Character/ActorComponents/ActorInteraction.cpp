@@ -231,8 +231,18 @@ void UActorInteraction::PickupCancelled()
 {
 	TimeElapsed = 0.f;
 	isInteracted = false;
-	if (II_Interaction::Execute_GetInteractionType(ItemActorArray[ArrayLength - 1]) == EIThold) { Widget->Progress->SetPercent(0); };
-	
+
+	if (ItemActorArray.IsEmpty() || !IsValid(ItemActorArray.Last()))
+	{
+		return;
+	}
+
+	if (II_Interaction::Execute_GetInteractionType(ItemActorArray.Last()) == EIThold
+		&& IsValid(Widget)
+		&& IsValid(Widget->Progress))
+	{
+		Widget->Progress->SetPercent(0.f);
+	}
 }
 
 void UActorInteraction::SetLocation(AActor* Other, UWidgetComponent* Component)

@@ -12,6 +12,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class UActorInteraction;
+class UActorInventory;
 
 UCLASS()
 class PROJECTCNEDCPP_API AHero : public ACharacter
@@ -81,5 +82,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
 	TObjectPtr<UActorInteraction> InteractionComponent;
+	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
+	TObjectPtr<UActorInventory> InventoryComponent;
 
 };

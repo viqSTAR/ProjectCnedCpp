@@ -3,13 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "ItemStruct.generated.h"
 
 /**
  *
  */
 
-class FGameplayTag;
+
+
 
 class UItemDefinition;
 

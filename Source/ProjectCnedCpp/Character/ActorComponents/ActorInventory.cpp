@@ -32,3 +32,18 @@ void UActorInventory::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	// ...
 }
 
+void UActorInventory::Add(TSubclassOf<UItemDefinition> ItemDef)
+{
+	if (ItemDef)
+	{
+		UItemDefinition* Definition = ItemDef.GetDefaultObject();
+		UItemInstance* Instance = NewObject<UItemInstance>(this);
+		Instance->Initialize(Definition);
+
+		ItemInventory.Add(Instance);
+
+		UE_LOG(LogTemp, Warning, TEXT("ItemAdded"));
+		
+	}
+}
+
