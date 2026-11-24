@@ -19,12 +19,8 @@ class PROJECTCNEDCPP_API UAttack_Base : public UWeaponAttack
 public:
 	virtual void ExecuteAttack_Implementation(AActor* Target) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	TArray<FName> AttackSections;
-
-	
-
-
-
 	
 	
 };

@@ -38,7 +38,11 @@ void USlotUI::NativeOnMouseLeave(const FPointerEvent& MouseEvent)
 
 void USlotUI::NativeConstruct()
 {
-	ItemDefinition = ItemInstance->Struct.ItemDefinition.GetDefaultObject();
+	if (ItemInstance && ItemInstance->Struct.ItemDefinition)
+	{
+		ItemDefinition = ItemInstance->Struct.ItemDefinition.GetDefaultObject();
+	}
+	
 	Super::NativeConstruct();
 	if (Name)
 	{

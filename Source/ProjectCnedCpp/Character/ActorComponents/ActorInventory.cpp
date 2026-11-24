@@ -8,7 +8,9 @@
 #include "ProjectCnedCpp/Item/Item.h"
 #include "ProjectCnedCpp/ItemFragments/IF_ItemType.h"
 #include "ProjectCnedCpp/UI/InventoryUi.h"
+#include "ProjectCnedCpp/UI/WeaponInventory.h"
 #include "ProjectCnedCpp/ItemFragments/IF_ItemAction.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values for this component's properties
 UActorInventory::UActorInventory()
@@ -26,10 +28,31 @@ void UActorInventory::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (InventoryWidget)
+	
+
+	
+
+	if (InventoryWidget && WeaponInventoryWidget)
 	{
 		InventoryUI = CreateWidget<UUserWidget>(GetWorld(), InventoryWidget);
+		WeaponInventoryUI = CreateWidget<UUserWidget>(GetWorld(), WeaponInventoryWidget);
+
+		UWeaponInventory* WeaponInventoryRef = Cast<UWeaponInventory>(WeaponInventoryUI);
+
+		WeaponInventoryUI->AddToViewport();
+		
+		if (WeaponInventoryRef)
+		{
+			WeaponInventoryRef->InventoryRef = this;
+			WeaponInventoryRef->OnWeaponChanged.AddUObject(WeaponInventoryRef, &UWeaponInventory::AddWeaponToInventory);
+		}
+		if (WeaponInventoryRef)
+		{
+			WeaponInventoryRef->OnWeaponChanged.Broadcast();
+		}
 	}
+
+	
 
 	// ...
 	if (GetOwner())
@@ -50,6 +73,8 @@ void UActorInventory::BeginPlay()
 		InventoryRef->InventoryComponent = this;
 		InventoryRef->OnInventoryChanged.AddUObject(InventoryRef, &UInventoryUi::AddItemToInventory);
 	}
+
+
 	
 	
 }
@@ -87,6 +112,13 @@ void UActorInventory::Add(TSubclassOf<UItemDefinition> ItemDef)
 			else
 			{
 				WeaponInventory[0] = Instance;
+			}
+
+			UWeaponInventory* WeaponInventoryRef = Cast<UWeaponInventory>(WeaponInventoryUI);
+
+			if (WeaponInventoryRef)
+			{
+				WeaponInventoryRef->OnWeaponChanged.Broadcast();
 			}
 			return;
 		}

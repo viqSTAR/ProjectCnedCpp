@@ -46,8 +46,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> InventoryInput;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
 	TSubclassOf<UUserWidget> InventoryWidget;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	TSubclassOf<UUserWidget> WeaponInventoryWidget;
 
 	void ShowInventory();
 
@@ -59,5 +61,7 @@ public:
 protected:
 	UPROPERTY(Transient)
 	TObjectPtr<UUserWidget> InventoryUI;
+	UPROPERTY(Transient)
+	TObjectPtr<UUserWidget> WeaponInventoryUI;
 		
 };
