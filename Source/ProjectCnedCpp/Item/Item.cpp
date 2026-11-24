@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/SceneComponent.h"
 #include "ProjectCnedCpp/ItemFragments/IF_InteractionType.h"
+#include "ProjectCnedCpp/ItemFragments/IF_ItemType.h"
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
 
 
@@ -30,10 +31,13 @@ void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (ItemInfo.ItemDefinition)
+	{
+		if (ItemInfo.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh)
+			MeshComponent->SetStaticMesh(ItemInfo.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh);
+	}
 	
 	
-	if (ItemInfo.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh)
-		MeshComponent->SetStaticMesh(ItemInfo.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh);
 	//ItemInfo.ItemDefinition = UItemA;
 }
 
@@ -58,6 +62,10 @@ void AItem::OnPickup_Implementation(AActor* Actor)
 EInteractionType AItem::GetInteractionType_Implementation()
 
 {
+	if(!ItemInfo.ItemDefinition)
+	{
+		return EITpress;
+	}
 	const UIF_InteractionType* Fragment = Cast<UIF_InteractionType>(ItemInfo.ItemDefinition->GetDefaultObject<UItemDefinition>()->FindFragmentByClass(ItemInfo.ItemDefinition, UIF_InteractionType::StaticClass()));
 	if (Fragment)
 	{
@@ -73,6 +81,10 @@ EInteractionType AItem::GetInteractionType_Implementation()
 
 float AItem::ItemCounter_Implementation()
 {
+	if(!ItemInfo.ItemDefinition)
+	{
+		return 1.f;
+	}
 	const UIF_InteractionType* Fragment = Cast<UIF_InteractionType>(ItemInfo.ItemDefinition->GetDefaultObject<UItemDefinition>()->FindFragmentByClass(ItemInfo.ItemDefinition, UIF_InteractionType::StaticClass()));
 
 	if (Fragment)
@@ -106,6 +118,16 @@ FVector AItem::ItemLocation_Implementation()
 	
 		return FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
 	
+}
+
+EItemType AItem::GetItemType_Implementation()
+{
+	const UIF_ItemType* ItemTypeFragment = Cast<UIF_ItemType>(UItemDefinition::FindFragmentByClass(ItemInfo.ItemDefinition, UIF_ItemType::StaticClass()));
+	if (ItemTypeFragment)
+	{
+		return ItemTypeFragment->ItemType;
+	}
+	return EItemType::EITItem;
 }
 
 

@@ -9,6 +9,7 @@ class UVerticalBox;
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE(FOnChanged);
 UCLASS()
 class PROJECTCNEDCPP_API UInventoryUi : public UUserWidget
 {
@@ -17,6 +18,8 @@ class PROJECTCNEDCPP_API UInventoryUi : public UUserWidget
 public:	
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* InventoryWrapBox;
+	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* InventoryWrapBoxUtil;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TSubclassOf<UUserWidget> InventoryItemClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
@@ -31,5 +34,7 @@ public:
 	void ClearInventory();
 
 	class UActorInventory* InventoryComponent;
+
+	FOnChanged OnInventoryChanged;
 	
 };

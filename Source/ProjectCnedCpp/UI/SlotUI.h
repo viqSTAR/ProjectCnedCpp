@@ -7,6 +7,7 @@
 #include "SlotUI.generated.h"
 
 
+
 class UTextBlock;
 class UImage;
 /**
@@ -21,10 +22,19 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> Name;
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> StackCount;
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemsCPP")
 	class UItemDefinition* ItemDefinition;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemsCPP")
+	class UItemInstance* ItemInstance;
+
+	virtual void NativeOnMouseEnter(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent) override;
+
+	virtual void NativeOnMouseLeave(const FPointerEvent& MouseEvent) override;
+
 
 	
 

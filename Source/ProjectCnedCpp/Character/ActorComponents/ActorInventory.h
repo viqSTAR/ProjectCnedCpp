@@ -32,8 +32,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TArray<TObjectPtr<UItemInstance>> ItemInventory;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	TArray<TObjectPtr<UItemInstance>> WeaponInventory;
+
 
 	void Add(TSubclassOf<UItemDefinition> ItemDef);
+
+	UFUNCTION(BlueprintCallable)
+	void Drop(UItemInstance* ItemInst);
 
 	class UEnhancedInputComponent* Enhanced;
 
@@ -45,8 +51,13 @@ public:
 
 	void ShowInventory();
 
+	void HideInventory();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UsableInstances")
+	UItemInstance* usableInstance = nullptr;
+
 protected:
-	
+	UPROPERTY(Transient)
 	TObjectPtr<UUserWidget> InventoryUI;
 		
 };

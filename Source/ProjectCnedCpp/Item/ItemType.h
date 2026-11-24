@@ -12,7 +12,8 @@ UENUM(BlueprintType)
 enum EItemType : uint8
 {
 	EITItem UMETA(DisplayName = "Item"),
-	EITHeal UMETA(DisplayName = "Item"),
-	EITQuest UMETA(DisplayName = "Item"),
-	EITWeapon UMETA(DisplayName = "Item")
+	EITHeal UMETA(DisplayName = "Heal"),
+	EITUtility UMETA(DisplayName = "Utility"),
+	EITQuest UMETA(DisplayName = "Quest"),
+	EITWeapon UMETA(DisplayName = "Weapon")
 };

@@ -45,6 +45,9 @@ public:
 	virtual FText ItemName_Implementation() override;
 	virtual FText ItemDescription_Implementation() override;
 	virtual FVector ItemLocation_Implementation() override;
+	virtual EItemType GetItemType_Implementation() override;
+	
+	
 
 
 	

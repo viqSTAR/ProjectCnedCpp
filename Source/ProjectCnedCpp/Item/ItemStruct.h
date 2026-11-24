@@ -24,6 +24,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UItemDefinition> ItemDefinition;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 StackCount = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FGameplayTag, float> ItemTags;

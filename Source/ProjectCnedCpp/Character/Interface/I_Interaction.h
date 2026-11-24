@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "ProjectCnedCpp/Enums/E_InteractionType.h"
+#include "ProjectCnedCpp/Item/ItemType.h"
 #include "I_Interaction.generated.h"
 
 
@@ -30,6 +31,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	EInteractionType GetInteractionType();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	EItemType GetItemType();
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	float ItemCounter();
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
