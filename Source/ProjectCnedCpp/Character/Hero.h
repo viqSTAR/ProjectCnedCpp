@@ -13,6 +13,7 @@ class UInputMappingContext;
 class UInputAction;
 class UActorInteraction;
 class UActorInventory;
+class UCombatComponent;
 
 UCLASS()
 class PROJECTCNEDCPP_API AHero : public ACharacter
@@ -84,5 +85,7 @@ public:
 	TObjectPtr<UActorInteraction> InteractionComponent;
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
 	TObjectPtr<UActorInventory> InventoryComponent;
+	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
+	TObjectPtr<UCombatComponent> CombatComponent;
 
 };

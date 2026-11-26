@@ -7,6 +7,8 @@
 #include "IF_Attack.generated.h"
 
 class UWeaponAttack;
+class UAnimInstance;
+class UAnimMontage;
 /**
  * 
  */
@@ -28,6 +30,27 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
 	TObjectPtr<UWeaponAttack> UltimateWeaponAttack;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<UAnimInstance> BaseAnimLayer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UAnimMontage> EquipMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FName SokcetName;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FName HostlerSokcetName;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FVector SokcetRelativeLocation;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FRotator SokcetRelativeRotation;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FVector HostlerSokcetRelativeLocation;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FRotator HostlerSokcetRelativeRotation;
+
+	
 
 	
 };

@@ -12,6 +12,8 @@
 #include "Components/WidgetComponent.h"
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInteraction.h"
+#include "ProjectCnedCpp/Character/ActorComponents/CombatComponent.h"
+
 
 
 
@@ -26,6 +28,7 @@ AHero::AHero()
 	FollowCamera->SetupAttachment(CameraBoom);
 	InteractionComponent = CreateDefaultSubobject<UActorInteraction>(TEXT("Interaction"));
 	InventoryComponent = CreateDefaultSubobject<UActorInventory>(TEXT("Inventory"));
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat"));
 	InteractComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractWidget"));
 	//InteractComponent->SetupAttachment(GetRootComponent());
 	InteractComponent->SetWidgetSpace(EWidgetSpace::Screen);
