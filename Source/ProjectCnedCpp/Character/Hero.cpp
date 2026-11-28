@@ -13,6 +13,8 @@
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInteraction.h"
 #include "ProjectCnedCpp/Character/ActorComponents/CombatComponent.h"
+#include "ProjectCnedCpp/Character/ActorComponents/ActorHealth.h"
+#include "ProjectCnedCpp/Notifies/MovementTags.h"
 
 
 
@@ -28,6 +30,7 @@ AHero::AHero()
 	FollowCamera->SetupAttachment(CameraBoom);
 	InteractionComponent = CreateDefaultSubobject<UActorInteraction>(TEXT("Interaction"));
 	InventoryComponent = CreateDefaultSubobject<UActorInventory>(TEXT("Inventory"));
+	HealthComponent = CreateDefaultSubobject<UActorHealth>(TEXT("Health"));
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat"));
 	InteractComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractWidget"));
 	//InteractComponent->SetupAttachment(GetRootComponent());
@@ -98,6 +101,10 @@ void AHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AHero::Move(const FInputActionValue& value)
 {
+	if (CombatComponent && CombatComponent->GameplayTag.HasTag(MovementTags::TAG_State_DontMove))
+	{
+		return;
+	}
 	FVector2D MoveValue = value.Get<FVector2D>();
 
 	const FRotator ControlRotation = GetControlRotation();
@@ -121,13 +128,17 @@ void AHero::Look(const FInputActionValue& value)
 
 void AHero::Sprint(const FInputActionValue& value)
 {
+	
 	bool IsSprinting = value.Get<bool>();
 	MovementComponent->MaxWalkSpeed = IsSprinting ? 900.f : 300.f;
 }
 
 void AHero::EnhancedJump(const FInputActionValue& value)
 {
-
+	if (CombatComponent && CombatComponent->GameplayTag.HasTag(MovementTags::TAG_State_DontMove))
+	{
+		return;
+	}
 	if (IsJumping == false)
 	{
 		Jump();

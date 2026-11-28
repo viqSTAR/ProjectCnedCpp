@@ -2,6 +2,7 @@
 
 
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
+#include "ProjectCnedCpp/Character/ActorComponents/CombatComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "Blueprint/UserWidget.h"
@@ -119,6 +120,44 @@ void UActorInventory::Add(TSubclassOf<UItemDefinition> ItemDef)
 			if (WeaponInventoryRef)
 			{
 				WeaponInventoryRef->OnWeaponChanged.Broadcast();
+			}
+
+			UActorInventory* Inventory = GetOwner()->FindComponentByClass<UActorInventory>();
+			UCombatComponent* Combat = GetOwner()->FindComponentByClass<UCombatComponent>();
+			UItemInstance* ItemInst = nullptr;
+			if (Inventory && Combat)
+			{
+				if (Inventory->WeaponInventory.IsValidIndex(0) && Inventory->WeaponInventory[0] && Combat->WeaponMeshA)
+				{
+					ItemInst = Inventory->WeaponInventory[0];
+					Combat->WeaponMeshA->SetStaticMesh(ItemInst->Struct.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh);
+				}
+				if (Inventory->WeaponInventory.IsValidIndex(1) && Inventory->WeaponInventory[1] && Combat->WeaponMeshB)
+				{
+					ItemInst = Inventory->WeaponInventory[1];
+					Combat->WeaponMeshB->SetStaticMesh(ItemInst->Struct.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh);
+				}
+
+
+				for (int i = 0; i < Inventory->WeaponInventory.Num(); ++i)
+				{
+					if (Combat->EquipIndex == i)
+					{
+
+						Combat->AttachToSocket(i);
+						Combat->CharacterEquipping(Inventory->WeaponInventory[i]);
+					}
+					else
+					{
+						Combat->AttachToHostler(i);
+
+					}
+				}
+				if (Combat->CharacterState == ECharacterState::ECSUnequipped && Inventory->WeaponInventory.Num() > 0)
+				{
+					Combat->WeaponEquipUnEquip(Inventory->WeaponInventory.Num() - 1);
+				}
+
 			}
 			return;
 		}

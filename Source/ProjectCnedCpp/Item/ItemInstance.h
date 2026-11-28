@@ -13,13 +13,14 @@
  */
 
 class UItemDefinition;
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, Abstract, Const)
 class PROJECTCNEDCPP_API UItemInstance : public UObject
 {
 	GENERATED_BODY()
 
 
 public:
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "ItemDetails")
 	UItemDefinition* ItemDefinition;
 
 	FInventoryItemStruct Struct;

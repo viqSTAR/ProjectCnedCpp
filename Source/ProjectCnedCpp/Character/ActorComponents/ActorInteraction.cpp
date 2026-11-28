@@ -180,15 +180,15 @@ void UActorInteraction::PickupItem()
 	if (!ItemActorArray.IsEmpty())
 	{
 
-		
-		
-		if(IntType == EITpress)
+
+
+		if (IntType == EITpress)
 		{
-			II_Interaction::Execute_OnPickup(ItemActorArray[ArrayLength-1], GetOwner());
+			II_Interaction::Execute_OnPickup(ItemActorArray[ArrayLength - 1], GetOwner());
 		}
 		if (IntType == EITtap)
 		{
-			float TimeCounter = II_Interaction::Execute_ItemCounter(ItemActorArray[ArrayLength -1]);
+			float TimeCounter = II_Interaction::Execute_ItemCounter(ItemActorArray[ArrayLength - 1]);
 			int TapCounter = static_cast<int32>(TimeCounter);
 
 			TapElapsed++;
@@ -200,53 +200,13 @@ void UActorInteraction::PickupItem()
 			SetPercentages(Widget, TapElapsed, TapCounter);
 		}
 
-		
 
-		UActorInventory* Inventory = GetOwner()->FindComponentByClass<UActorInventory>();
-		UCombatComponent* Combat = GetOwner()->FindComponentByClass<UCombatComponent>();
-		UItemInstance* ItemInst = nullptr;
-		if (Inventory && Combat)
-		{
-			if (Inventory->WeaponInventory.IsValidIndex(0) && Inventory->WeaponInventory[0] && Combat->WeaponMeshA)
-			{
-				ItemInst = Inventory->WeaponInventory[0];
-				Combat->WeaponMeshA->SetStaticMesh(ItemInst->Struct.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh);
-			}
-			if (Inventory->WeaponInventory.IsValidIndex(1) && Inventory->WeaponInventory[1] && Combat->WeaponMeshB)
-			{
-				ItemInst = Inventory->WeaponInventory[1];
-				Combat->WeaponMeshB->SetStaticMesh(ItemInst->Struct.ItemDefinition->GetDefaultObject<UItemDefinition>()->Mesh);
-			}
-			if (Inventory->WeaponInventory.Num() == 1)
-			{
-				if (Combat && Combat->CharacterState == ECharacterState::ECSUnequipped)
-				{
-					Combat->AttachToHostler(0);
-					Combat->WeaponEquipUnEquip(0);
-				}
-			}
-			else if(Inventory->WeaponInventory.Num() == 2) {
-				if (Combat && Combat->CharacterState == ECharacterState::ECSUnequipped)
-				{
-					Combat->AttachToHostler(1);
-					Combat->WeaponEquipUnEquip(1);
-				}
-				else if (Combat && Combat->CharacterState == ECharacterState::ECSEquipped)
-				{
-					Combat->AttachToHostler(1);
-				}
-				
-			}
-		}
-		
-		
 
 		
-
 	}
-	
 }
-
+		
+	
 
 void UActorInteraction::PickupOngoing(const FInputActionInstance& Instance)
 {

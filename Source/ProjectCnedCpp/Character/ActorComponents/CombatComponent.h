@@ -5,14 +5,17 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ProjectCnedCpp/Enums/E_CharacterState.h"
+#include "GameplayTagContainer.h"
 #include "CombatComponent.generated.h"
 
 
 class UAnimInstance;
 class USkeletalMeshComponent;
 class UItemInstance;
+class UItemDefinition;
 class UInputAction;
 class UAnimMontage;
+class AActor;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -46,6 +49,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	USkeletalMeshComponent* SmComponent;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> DamagedActors;
 
 	void CharacterEquipping(UItemInstance* ItemInst);
 	void CharacterUnEquipping();
@@ -60,7 +65,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* EquipSlotB;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* AttackA;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer GameplayTag;
 
+	UFUNCTION()
+	void AttackAStarted();
+
+	UPROPERTY()
+	bool bIsAttacking;
 	UFUNCTION()
 	void HandleOnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload);
 
@@ -90,6 +104,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnMontageEndedHandler(UAnimMontage* Montage, bool bInterrupted);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UItemDefinition> DefaultAttackDef;
 
 		
 };

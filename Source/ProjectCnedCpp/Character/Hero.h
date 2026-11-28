@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "GameplayTagContainer.h"
 #include "Hero.generated.h"
 
 class USpringArmComponent;
@@ -14,6 +15,7 @@ class UInputAction;
 class UActorInteraction;
 class UActorInventory;
 class UCombatComponent;
+class UActorHealth;
 
 UCLASS()
 class PROJECTCNEDCPP_API AHero : public ACharacter
@@ -87,5 +89,8 @@ public:
 	TObjectPtr<UActorInventory> InventoryComponent;
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
 	TObjectPtr<UCombatComponent> CombatComponent;
+	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
+	TObjectPtr<UActorHealth> HealthComponent;
+	
 
 };

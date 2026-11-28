@@ -11,6 +11,8 @@
 #include "EnhancedInputComponent.h"
 #include "ProjectCnedCpp/Character/ActorComponents/ActorInventory.h"
 #include "Components/StaticMeshComponent.h"
+#include "ProjectCnedCpp/Attack/WeaponAttack.h"
+#include "ProjectCnedCpp/Notifies/MovementTags.h"
 
 
 // Sets default values for this component's properties
@@ -29,6 +31,8 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+
+
 	if (GetOwner())
 	{
 		WeaponMeshA = NewObject<UStaticMeshComponent>(GetOwner());
@@ -44,6 +48,7 @@ void UCombatComponent::BeginPlay()
 
 	bIsEquipping = false;
 	doEquipping = false;
+	bIsAttacking = false;
 	// ...
 	CharacterState = ECharacterState::ECSUnequipped;
 
@@ -52,10 +57,11 @@ void UCombatComponent::BeginPlay()
 		
 		EquipIndex = -1;
 		UEnhancedInputComponent* Enhanced = GetOwner()->FindComponentByClass<UEnhancedInputComponent>();
-		if(Enhanced && EquipSlotA && EquipSlotB)
+		if(Enhanced && EquipSlotA && EquipSlotB && AttackA)
 		{
 			Enhanced->BindAction(EquipSlotA, ETriggerEvent::Started, this, &UCombatComponent::WeaponEquipUnEquip, 0);
 			Enhanced->BindAction(EquipSlotB, ETriggerEvent::Started, this, &UCombatComponent::WeaponEquipUnEquip, 1);
+			Enhanced->BindAction(AttackA, ETriggerEvent::Started, this, &UCombatComponent::AttackAStarted);
 		}
 		
 		SmComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
@@ -114,6 +120,7 @@ void UCombatComponent::CharacterEquipping(UItemInstance* ItemInst)
 			CurrentAnimLayer = UnequippedAnimLayer;
 		}
 		SmComponent->LinkAnimClassLayers(CurrentAnimLayer);
+		AnimInstance->RequestSlotGroupInertialization(FName("DefaultGroup"), 0.35f);
 	}
 }
 
@@ -124,6 +131,7 @@ void UCombatComponent::CharacterUnEquipping()
 		SmComponent->UnlinkAnimClassLayers(CurrentAnimLayer);
 		CurrentAnimLayer = UnequippedAnimLayer;
 		SmComponent->LinkAnimClassLayers(CurrentAnimLayer);
+		AnimInstance->RequestSlotGroupInertialization(FName("DefaultGroup"), 0.35f);
 	}
 }
 
@@ -188,7 +196,7 @@ void UCombatComponent::UnequipWeapon(int i)
 
 void UCombatComponent::WeaponEquipUnEquip(int i)
 {
-	if (bIsEquipping)
+	if (bIsAttacking || bIsEquipping)
 	{
 		return;
 	}
@@ -217,6 +225,7 @@ void UCombatComponent::WeaponEquipUnEquip(int i)
 	{
 		if (CharacterState == ECharacterState::ECSEquipped)
 		{
+			
 			UnequipWeapon(EquipIndex);
 			newWeaponIndex = i;
 			doEquipping = true;
@@ -226,6 +235,75 @@ void UCombatComponent::WeaponEquipUnEquip(int i)
 			newWeaponIndex = i;
 			EquipWeapon(i);
 		}
+		
+	}
+}
+
+void UCombatComponent::AttackAStarted()
+{
+	if(bIsEquipping || bIsAttacking || bIsEquipping)
+	{
+		return;
+	}
+
+	
+	
+	int i = EquipIndex;
+	UActorInventory* Inventory = GetOwner()->FindComponentByClass<UActorInventory>();
+	if (CharacterState == ECharacterState::ECSUnequipped)
+	{
+		const UIF_Attack* AttackFragment = Cast<UIF_Attack>(UItemDefinition::FindFragmentByClass(DefaultAttackDef, UIF_Attack::StaticClass()));
+		if (AttackFragment && AttackFragment->BaseWeaponAttack)
+		{
+
+			AttackFragment->BaseWeaponAttack->ExecuteAttack(GetOwner());
+			float Chance = FMath::RandRange(0.0f, 100.0f);
+
+
+			if (Chance < 25.0f) // 25% chance for critical hit
+			{
+				Damage = AttackFragment->BaseWeaponAttack->CritDamage;
+			}
+			else
+			{
+				Damage = AttackFragment->BaseWeaponAttack->Damage;
+			}
+			bIsAttacking = true;
+			GameplayTag.AddTag(MovementTags::TAG_State_DontMove_Attacking);
+		}
+		return;
+	}
+
+	if (Inventory)
+	{
+		UItemInstance* ItemInst = nullptr;
+		
+
+		if (Inventory->WeaponInventory.IsValidIndex(i) && Inventory->WeaponInventory[i])
+		{
+			ItemInst = Inventory->WeaponInventory[i];
+			
+			const UIF_Attack* AttackFragment = Cast<UIF_Attack>(UItemDefinition::FindFragmentByClass(ItemInst->Struct.ItemDefinition, UIF_Attack::StaticClass()));
+			if (AttackFragment && AttackFragment->BaseWeaponAttack)
+			{
+
+				AttackFragment->BaseWeaponAttack->ExecuteAttack(GetOwner());
+				float Chance = FMath::RandRange(0.0f, 100.0f);
+
+
+				if (Chance < 25.0f) // 25% chance for critical hit
+				{
+					Damage = AttackFragment->BaseWeaponAttack->CritDamage;
+				}
+				else
+				{
+					Damage = AttackFragment->BaseWeaponAttack->Damage;
+				}
+				bIsAttacking = true;
+				GameplayTag.AddTag(MovementTags::TAG_State_DontMove_Attacking);
+			}
+		}
+
 		
 	}
 }
@@ -254,6 +332,11 @@ void UCombatComponent::HandleOnMontageNotifyBegin(FName NotifyName, const FBranc
 		bIsEquipping = false;
 		AttachToSocket(EquipIndex);
 
+	}
+	else if (NotifyName == FName("Attack"))
+	{
+		bIsAttacking = false;
+		
 	}
 }
 
@@ -305,13 +388,26 @@ void UCombatComponent::AttachToHostler(int32 i)
 	}
 }
 
+
+
 void UCombatComponent::OnMontageEndedHandler(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (AnimInstance && !AnimInstance->IsAnyMontagePlaying())
+	if (!bInterrupted)
+	{
+		bIsEquipping = false;
+		doEquipping = false;
+		bIsAttacking = false;
+		GameplayTag.RemoveTag(MovementTags::TAG_State_DontMove_Attacking);
+	}
+	if (AnimInstance && AnimInstance->GetCurrentActiveMontage() != Montage)
+	{
+		bIsAttacking = false;
+		GameplayTag.RemoveTag(MovementTags::TAG_State_DontMove_Attacking);
+	}
+	if(AnimInstance && !AnimInstance->GetCurrentActiveMontage())
 	{
 		bIsEquipping = false;
 		doEquipping = false;
 	}
-
 }
 

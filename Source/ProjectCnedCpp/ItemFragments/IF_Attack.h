@@ -9,6 +9,7 @@
 class UWeaponAttack;
 class UAnimInstance;
 class UAnimMontage;
+class FHitActor;
 /**
  * 
  */
@@ -49,6 +50,16 @@ public:
 	FVector HostlerSokcetRelativeLocation;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FRotator HostlerSokcetRelativeRotation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FVector AttackStart;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FVector AttackEnd;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FVector HalfSize;
+	
+	
 
 	
 
